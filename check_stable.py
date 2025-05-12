@@ -13,7 +13,7 @@ import toml
 import sys
 
 # Dockerhub repo to compare rust-lang release with
-DOCKERHUB_REPO="clux/muslrust"
+DOCKERHUB_REPO="beerpsi/cargo-chef-musl-mimalloc"
 
 def rust_stable_version():
     """Retrieve the latest rust stable version from static.rust-lang.org"""
