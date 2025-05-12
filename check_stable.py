@@ -52,15 +52,15 @@ if __name__ == '__main__':
     stable_tag = f'{latest_stable}-stable'
     if not tag_exists("clux/muslrust", stable_tag):
         print(f"upstream {stable_tag} has not been built, waiting for later")
-        sys.exit(0)
+        sys.exit(1)
 
     with open(os.environ["GITHUB_OUTPUT"], "a") as f:
         _ = f.write(f"MUSLRUST_VERSION={stable_tag}\n")
     
     if tag_exists(DOCKERHUB_REPO, stable_tag):
         print(f"tag {stable_tag} already built")
-        sys.exit(0)
+        sys.exit(1)
     
     print(f"need to build {latest_stable}")
 
-    sys.exit(1)
+    sys.exit(0)
