@@ -7,6 +7,7 @@
 # If we have not built it, print the version we need to build and exit 0
 # If we have built it, exit 1
 
+from urllib.error import HTTPError
 import urllib.request as urllib
 import json
 import toml
@@ -27,7 +28,16 @@ def tag_exists(tag):
     """Retrieve our built tags and check we have built a given one"""
     (namespace, repo) = DOCKERHUB_REPO.split("/")
     url = f'https://registry.hub.docker.com/v2/namespaces/{namespace}/repositories/{repo}/tags'
-    req = urllib.urlopen(url)
+
+    try:
+        req = urllib.urlopen(url)
+    except HTTPError as e:
+        if e.code == 404:
+            return False
+        
+        print(e)
+        sys.exit(0)
+
     data = json.loads(req.read())
     req.close()
     for x in data['results']:
