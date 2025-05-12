@@ -83,7 +83,7 @@ jobs:
         tags: cargo-chef-musl-mimalloc-temp
         build-args: |
           ALPINE_VERSION=latest
-          MUSLRUST_VERSION=${{ steps.stablecheck.output.MUSLRUST_VERSION }}
+          MUSLRUST_VERSION=${{ steps.stablecheck.outputs.MUSLRUST_VERSION }}
       if: ${{ steps.stablecheck.outputs.BUILD }}
 
     # - name: Run tests
