@@ -63,4 +63,4 @@ if __name__ == '__main__':
     with open(os.environ["GITHUB_OUTPUT"], "a") as f:
         _ = f.write(f"MUSLRUST_VERSION={stable_tag}\n")
 
-    sys.exit(0)
+    sys.exit(1)
