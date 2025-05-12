@@ -59,7 +59,7 @@ if __name__ == '__main__':
     
     if tag_exists(DOCKERHUB_REPO, stable_tag):
         print(f"tag {stable_tag} already built")
-        sys.exit(1)
+        sys.exit(0)
     
     print(f"need to build {latest_stable}")
 
