@@ -47,8 +47,7 @@ RUN rm -rf /tmp/mimalloc.diff /tmp/mimalloc-$MIMALLOC_VERSION
 FROM clux/muslrust:$MUSLRUST_VERSION AS chef
 USER root
 
-ARG CARGO_CHEF_VERSION=0.1.71
-RUN cargo install --version $CARGO_CHEF_VERSION cargo-chef
+RUN cargo install cargo-chef
 RUN apt-get update \
   && apt-get install -y mold \
   && rm -rf /var/lib/apt/lists/* \

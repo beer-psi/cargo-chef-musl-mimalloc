@@ -12,6 +12,7 @@ import urllib.request as urllib
 import json
 import toml
 import sys
+import os
 
 # Dockerhub repo to compare rust-lang release with
 DOCKERHUB_REPO="beerpsi/cargo-chef-musl-mimalloc"
@@ -24,9 +25,9 @@ def rust_stable_version():
     req.close()
     return data['pkg']['rust']['version'].split()[0]
 
-def tag_exists(tag):
+def tag_exists(repo, tag):
     """Retrieve our built tags and check we have built a given one"""
-    (namespace, repo) = DOCKERHUB_REPO.split("/")
+    (namespace, repo) = repo.split("/")
     url = f'https://registry.hub.docker.com/v2/namespaces/{namespace}/repositories/{repo}/tags'
 
     try:
@@ -49,9 +50,17 @@ def tag_exists(tag):
 if __name__ == '__main__':
     latest_stable = rust_stable_version()
     stable_tag = f'{latest_stable}-stable'
-    if tag_exists(stable_tag):
-        print(f'tag {stable_tag} already built')
+    if not tag_exists("clux/muslrust", stable_tag):
+        print(f"upstream {stable_tag} has not been built, waiting for later")
         sys.exit(1)
-    else:
-        print(f'need to build {latest_stable}')
-        sys.exit(0)
+    
+    if tag_exists(DOCKERHUB_REPO, stable_tag):
+        print(f"tag {stable_tag} already built")
+        sys.exit(1)
+    
+    print(f"need to build {latest_stable}")
+
+    with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+        _ = f.write(f"MUSLRUST_VERSION={latest_stable}\n")
+
+    sys.exit(0)

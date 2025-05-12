@@ -48,7 +48,7 @@ jobs:
         pip3 install --user toml
         if python3 check_stable.py; then
           echo "Stable tag missing; running all build steps"
-          echo '::set-output name=BUILD::YES'
+          echo "BUILD=YES" >> $GITHUB_OUTPUT
         else
           echo "Stable tag found; skipping all build steps"
         fi
@@ -82,7 +82,8 @@ jobs:
         load: true
         tags: cargo-chef-musl-mimalloc-temp
         build-args: |
-          CHANNEL=stable
+          ALPINE_VERSION=latest
+          MUSLRUST_VERSION=${{ steps.stablecheck.output.MUSLRUST_VERSION }}
       if: ${{ steps.stablecheck.outputs.BUILD }}
 
     - name: Run tests

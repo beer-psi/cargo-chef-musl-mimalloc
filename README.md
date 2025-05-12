@@ -10,7 +10,7 @@ with caching to speed up CI build times.
 ## Example 
 
 ```dockerfile
-FROM ghcr.io/beer-psi/cargo-chef-musl-mimalloc:latest AS chef
+FROM beerpsi/cargo-chef-musl-mimalloc:latest AS chef
 WORKDIR /app
 
 FROM chef AS planner
