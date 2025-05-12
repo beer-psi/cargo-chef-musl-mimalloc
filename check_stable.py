@@ -61,6 +61,6 @@ if __name__ == '__main__':
     print(f"need to build {latest_stable}")
 
     with open(os.environ["GITHUB_OUTPUT"], "a") as f:
-        _ = f.write(f"MUSLRUST_VERSION={latest_stable}\n")
+        _ = f.write(f"MUSLRUST_VERSION={stable_tag}\n")
 
     sys.exit(0)
