@@ -36,5 +36,5 @@ This is just a patched together image, built on the shoulders of giants:
 - [`muslrust`](https://github.com/clux/muslrust)
 - [`cargo-chef`](https://github.com/LukeMathWalker/cargo-chef)
 - [`mimalloc`](https://github.com/microsoft/mimalloc)
-- [`rust-alpine-mimalloc`](github.com/tweag/rust-alpine-mimalloc), which originally came up with the
+- [TWEAG's `rust-alpine-mimalloc`](github.com/tweag/rust-alpine-mimalloc), who originally came up with the
 idea of replacing the `musl` allocator with `mimalloc`.
