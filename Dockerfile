@@ -1,5 +1,5 @@
 ARG ALPINE_VERSION=3.21
-ARG MUSLRUST_VERSION=1.86.0-stable-2025-05-10
+ARG MUSLRUST_VERSION=1.88.0-stable-2025-07-05
 
 ###############################################################################
 # Step 1: Building the mimalloc library
@@ -14,7 +14,7 @@ RUN apk add --no-cache alpine-sdk clang cmake curl mold ninja-is-really-ninja
 RUN find /usr -type f -executable -name "ld" -exec sh -c 'ln -sf /usr/bin/ld.mold {}' \;
 
 WORKDIR /tmp
-ARG MIMALLOC_VERSION=3.0.3
+ARG MIMALLOC_VERSION=3.1.5
 RUN curl -f -L --retry 5 https://github.com/microsoft/mimalloc/archive/refs/tags/v$MIMALLOC_VERSION.tar.gz | tar xz
 COPY build/mimalloc.diff /tmp
 
