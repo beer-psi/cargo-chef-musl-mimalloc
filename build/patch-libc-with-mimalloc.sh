@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euxo pipefail
 
-RUST_LIBC_PATH=$(find ${RUSTUP_HOME:-$HOME/.rustup} -name libc.a)
+RUST_LIBC_PATH=$(find "${RUSTUP_HOME:-$HOME/.rustup}" -name libc.a)
 
 for LIBC_PATH in "$RUST_LIBC_PATH" "/usr/lib/x86_64-linux-musl/libc.a" "/usr/lib/aarch64-linux-musl/libc.a"; do
     if [ ! -f "$LIBC_PATH" ]; then
