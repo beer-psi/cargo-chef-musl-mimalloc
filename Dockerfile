@@ -1,5 +1,5 @@
-ARG ALPINE_VERSION=3.21
-ARG MUSLRUST_VERSION=1.88.0-stable-2025-07-05
+ARG ALPINE_VERSION=3.22
+ARG MUSLRUST_VERSION=1.88.0-stable-2025-07-19
 
 ###############################################################################
 # Step 1: Building the mimalloc library
@@ -14,7 +14,7 @@ RUN apk add --no-cache alpine-sdk clang cmake curl mold ninja-is-really-ninja
 RUN find /usr -type f -executable -name "ld" -exec sh -c 'ln -sf /usr/bin/ld.mold {}' \;
 
 WORKDIR /tmp
-ARG MIMALLOC_VERSION=3.0.3
+ARG MIMALLOC_VERSION=3.1.5
 RUN curl -f -L --retry 5 https://github.com/microsoft/mimalloc/archive/refs/tags/v$MIMALLOC_VERSION.tar.gz | tar xz
 COPY build/mimalloc.diff /tmp
 
@@ -22,20 +22,20 @@ WORKDIR /tmp/mimalloc-$MIMALLOC_VERSION
 
 RUN patch -p1 < /tmp/mimalloc.diff
 RUN cmake \
-  -Bout \
-  -DCMAKE_BUILD_TYPE=Release \
-  -DCMAKE_C_COMPILER=clang \
-  -DCMAKE_INSTALL_PREFIX=/usr \
-  -DMI_BUILD_OBJECT=OFF \
-  -DMI_BUILD_TESTS=OFF \
-  -DMI_LIBC_MUSL=ON \
-  -DMI_SKIP_COLLECT_ON_EXIT=ON \
-  -G Ninja \
-  .
+    -Bout \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_C_COMPILER=clang \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DMI_BUILD_OBJECT=OFF \
+    -DMI_BUILD_TESTS=OFF \
+    -DMI_LIBC_MUSL=ON \
+    -DMI_SKIP_COLLECT_ON_EXIT=ON \
+    -G Ninja \
+    .
 RUN cmake --build out --target install -- -v
 RUN cp out/libmimalloc.* /usr/local/lib/ \
-  && mkdir -p /usr/local/lib/pkgconfig \
-  && cp out/mimalloc.pc /usr/local/lib/pkgconfig/
+    && mkdir -p /usr/local/lib/pkgconfig \
+    && cp out/mimalloc.pc /usr/local/lib/pkgconfig/
 RUN rm -rf /tmp/mimalloc.diff /tmp/mimalloc-$MIMALLOC_VERSION
 
 ###############################################################################
@@ -49,9 +49,9 @@ USER root
 
 RUN cargo install cargo-chef --locked && rm -rf $CARGO_HOME/registry/
 RUN apt-get update \
-  && apt-get install -y mold \
-  && rm -rf /var/lib/apt/lists/* \
-  && find /usr -type f -executable -name "ld" -exec sh -c 'ln -sf /usr/bin/ld.mold {}' \;
+    && apt-get install -y mold \
+    && rm -rf /var/lib/apt/lists/* \
+    && find /usr -type f -executable -name "ld" -exec sh -c 'ln -sf /usr/bin/ld.mold {}' \;
 
 WORKDIR /tmp
 
