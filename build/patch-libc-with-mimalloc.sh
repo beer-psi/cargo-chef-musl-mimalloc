@@ -15,5 +15,5 @@ for LIBC_PATH in "$RUST_LIBC_PATH" "/usr/lib/x86_64-linux-musl/libc.a" "/usr/lib
         echo "ADDLIB libmimalloc.a"
         echo "SAVE"
     } | ar -M
-    mv libc.a $LIBC_PATH
+    mv libc.a "$LIBC_PATH"
 done
