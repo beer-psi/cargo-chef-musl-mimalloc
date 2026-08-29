@@ -1,4 +1,4 @@
-name: stable
+name: nightly
 on:
   schedule:
     - cron: '0 13 * * *' # everyday at 1pm, after muslrust
@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: ${{ github.ref }}-stable
+  group: ${{ github.ref }}-nightly
   cancel-in-progress: true
 
 env:
@@ -19,7 +19,7 @@ env:
 
 jobs:
   build:
-    name: 'Stable Build'
+    name: 'nightly Build'
     runs-on: 'ubuntu-latest'
     strategy:
       fail-fast: false
@@ -42,16 +42,16 @@ jobs:
         username: "beerpsi"
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    - name: Check if we need a new stable
+    - name: Check if we need a new nightly
       id: versioncheck
       shell: bash
       run: |
         pip3 install --user toml
-        if python3 check_version.py stable; then
-          echo "Stable tag missing; running all build steps"
+        if python3 check_version.py nightly; then
+          echo "Nightly tag missing; running all build steps"
           echo "BUILD=YES" >> $GITHUB_OUTPUT
         else
-          echo "Stable tag found; skipping all build steps"
+          echo "Nightly tag found; skipping all build steps"
         fi
 
     - name: Prepare
@@ -71,7 +71,7 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
 
-    - name: Build stable image
+    - name: Build nightly image
       id: build
       uses: docker/build-push-action@v5
       with:
@@ -106,7 +106,7 @@ jobs:
       run: |
         mkdir -p /tmp/tags
         RUST_DATE="$(date +"%Y-%m-%d")"
-        RUST_CHANNEL=stable
+        RUST_CHANNEL=nightly
         RUST_VER="$(docker run --platform ${{ matrix.platform }} cargo-chef-musl-mimalloc-temp rustc --version | grep -oE "[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]")"
 
         echo $RUST_DATE > /tmp/tags/rust-date
@@ -137,22 +137,22 @@ jobs:
         overwrite: true
 
   merge:
-    name: 'Stable merge'
+    name: 'Nightly merge'
     runs-on: ubuntu-latest
     needs:
       - build
     steps:
     - uses: actions/checkout@v4
-    - name: Check if we need a new stable
+    - name: Check if we need a new nightly
       id: versioncheck
       shell: bash
       run: |
         pip3 install --user toml
-        if python3 check_version.py stable; then
-          echo "Stable tag missing; running all build steps"
+        if python3 check_version.py nightly; then
+          echo "Nightly tag missing; running all build steps"
           echo '::set-output name=BUILD::YES'
         else
-          echo "Stable tag found; skipping all build steps"
+          echo "Nightly tag found; skipping all build steps"
         fi
 
     - name: Download tags

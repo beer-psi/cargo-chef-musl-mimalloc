@@ -1,8 +1,8 @@
 #!/usr/bin/env python
-# check_stable.py
+# check_version.py
 #
-# Retrieve latest stable version from static.rust-lang.org
-# Compare the stable version to ensure we have a corresponding docker tag
+# Retrieve latest version from static.rust-lang.org
+# Compare the version to ensure we have a corresponding docker tag
 #
 # If we have not built it, print the version we need to build and exit 0
 # If we have built it, exit 1
@@ -17,9 +17,9 @@ import os
 # Dockerhub repo to compare rust-lang release with
 DOCKERHUB_REPO="beerpsi/cargo-chef-musl-mimalloc"
 
-def rust_stable_version():
-    """Retrieve the latest rust stable version from static.rust-lang.org"""
-    url = 'https://static.rust-lang.org/dist/channel-rust-stable.toml'
+def rust_version(branch):
+    """Retrieve the latest rust version from static.rust-lang.org"""
+    url = f'https://static.rust-lang.org/dist/channel-rust-{branch}.toml'
     req = urllib.urlopen(url)
     data = toml.loads(req.read().decode("utf-8"))
     req.close()
@@ -35,7 +35,7 @@ def tag_exists(repo, tag):
     except HTTPError as e:
         if e.code == 404:
             return False
-        
+
         print(e)
         sys.exit(0)
 
@@ -48,19 +48,21 @@ def tag_exists(repo, tag):
 
 
 if __name__ == '__main__':
-    latest_stable = rust_stable_version()
-    stable_tag = f'{latest_stable}-stable'
-    if not tag_exists("clux/muslrust", stable_tag):
-        print(f"upstream {stable_tag} has not been built, waiting for later")
+    branch = sys.argv[1]
+    latest_version = rust_version(branch)
+    tag = f'{latest_version}-{branch}'
+
+    if not tag_exists("clux/muslrust", tag):
+        print(f"upstream {tag} has not been built, waiting for later")
         sys.exit(1)
 
     with open(os.environ["GITHUB_OUTPUT"], "a") as f:
-        _ = f.write(f"MUSLRUST_VERSION={stable_tag}\n")
-    
-    if tag_exists(DOCKERHUB_REPO, stable_tag):
-        print(f"tag {stable_tag} already built")
+        _ = f.write(f"MUSLRUST_VERSION={tag}\n")
+
+    if tag_exists(DOCKERHUB_REPO, tag):
+        print(f"tag {tag} already built")
         sys.exit(1)
-    
-    print(f"need to build {latest_stable}")
+
+    print(f"need to build {latest_version}")
 
     sys.exit(0)
