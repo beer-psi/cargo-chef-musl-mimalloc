@@ -185,7 +185,7 @@ jobs:
         RUST_CHANNEL=$(cat /tmp/tags/rust-channel)
         RUST_VER=$(cat /tmp/tags/rust-ver)
 
-        for tag in latest ${RUST_CHANNEL} ${RUST_CHANNEL}-${RUST_DATE} ${RUST_VER}-${RUST_CHANNEL} ${RUST_VER}-${RUST_CHANNEL}-${RUST_DATE}; do
+        for tag in ${RUST_CHANNEL} ${RUST_CHANNEL}-${RUST_DATE} ${RUST_VER}-${RUST_CHANNEL} ${RUST_VER}-${RUST_CHANNEL}-${RUST_DATE}; do
           docker buildx imagetools create -t ${{ env.REGISTRY_IMAGE }}:$tag \
             ${{ env.REGISTRY_IMAGE }}:amd64-${RUST_VER}-${RUST_CHANNEL}-${RUST_DATE} \
             ${{ env.REGISTRY_IMAGE }}:arm64-${RUST_VER}-${RUST_CHANNEL}-${RUST_DATE}
