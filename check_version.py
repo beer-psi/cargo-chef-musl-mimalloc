@@ -50,7 +50,10 @@ def tag_exists(repo, tag):
 if __name__ == '__main__':
     branch = sys.argv[1]
     latest_version = rust_version(branch)
-    tag = f'{latest_version}-{branch}'
+    tag = latest_version
+
+    if not tag.endswith(branch):
+        tag = f"{latest_version}-{branch}"
 
     if not tag_exists("clux/muslrust", tag):
         print(f"upstream {tag} has not been built, waiting for later")
